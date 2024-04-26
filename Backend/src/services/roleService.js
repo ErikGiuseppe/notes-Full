@@ -1,80 +1,78 @@
-const database = require('../models')
-const uuid = require('uuid')
-class RoleService {
-    async cadastrar(dto) {
-        const role = await database.roles.findOne({
-            where: {
-                nome: dto.nome
-            }
-        })
-        if (role) {
-            throw new Error('Role já cadastrada')
-        }
-        try {
-            const newRole = await database.roles.create({
-                id: uuid.v4(),
-                nome: dto.nome,
-                descricao: dto.descricao
-            })
-            return newRole
-        } catch (error) {
-            throw new Error('Erro ao cadastrar role')
-        }
+const database = require("../models");
+const uuid = require("uuid");
+const Services = require("./Services.js");
+const RoleRepository = require("../repository/roleRepository.js");
+const roleRepository = new RoleRepository();
+class RoleService extends Services {
+  constructor() {
+    super(roleRepository);
+  }
+  async cadastrar(dto) {
+    const where = {
+      nome: dto.nome,
+    };
+    const role = await roleRepository.pegaUmRegistro(where);
+    if (role) {
+      throw new Error("Role já cadastrada");
     }
+    try {
+      const newRole = await roleRepository.criaRegistro(dto);
+      return newRole;
+    } catch (error) {
+      throw new Error("Erro ao cadastrar role");
+    }
+  }
 
-    async buscarTodasRoles() {
-        const roles = await database.roles.findAll()
-        return roles
+  async buscarTodasRoles() {
+    const roles = await roleRepository.pegaTodosOsRegistros();
+    return roles;
+  }
+  async buscarRolePorId(id) {
+    const where = {
+      id: id,
+    };
+    const role = await roleRepository.pegaUmRegistro(where);
+    if (!role) {
+      throw new Error("Role informada não cadastrada!");
     }
-    async buscarRolePorId(id) {
-        const role = await database.roles.findOne({         
-            where: {
-                id: id
-            }
-        })
-        if (!role) {
-            throw new Error('Role informada não cadastrada!')
-        }
-        return role
+    return role;
+  }
+  async deletarRolePorId(id) {
+    const where = {
+      id: id,
+    };
+    const role = await roleRepository.pegaUmRegistro(where);
+    if (!role) {
+      throw new Error("Role informada não cadastrada!");
     }
-    async deletarRolePorId(id) {
-        const role = await database.roles.findOne({
-            where: {
-                id: id
-            }
-        })
-        if (!role) {
-            throw new Error('Role informada não cadastrada!')
-        }
-        try {
-            await database.roles.destroy({
-                where: {
-                    id: id
-                }
-            })
-        } catch (error) {
-            console.error('Message error: ', error.message)
-            throw error
-        }
+    try {
+      const where = {
+        id: id,
+      };
+      await roleRepository.excluiRegistro(where);
+    } catch (error) {
+      console.error("Message error: ", error.message);
+      throw error;
     }
-    async editarRole(dto) {
-        const role = await database.roles.findOne({
-            where: {
-                id: dto.id
-            }
-        })
-        if (!role) {
-            throw new Error('Role informada não cadastrada!')
-        }
-        try {
-            role.nome = dto.nome,
-            role.descricao = dto.descricao
-            await role.save()
-            return await role.reload()
-        } catch (error) {
-            console.error('Message error: ', error.message)
-            throw error
-        }
+  }
+  async editarRole(dto) {
+    const where = {
+      id: dto.id,
+    };
+    const role = await roleRepository.pegaUmRegistro(where);
+    if (!role) {
+      throw new Error("Role informada não cadastrada!");
     }
+    const listadeRegistrosAtualizados =
+      this.entidadeRepository.atualizaRegistro(
+        dadosAtualizados,
+
+        where
+      );
+    if (listadeRegistrosAtualizados[0] === 0) {
+      return false;
+    }
+    return true;
+  }
 }
-module.exports = RoleService
+module.exports = RoleService;

@@ -1,16 +1,26 @@
-const Services = require('./Services.js');
-const dataSource = require('../models');
+const Services = require("./Services.js");
+const dataSource = require("../models/index.js");
+const PessoaRepository = require("../repository/PessoaRepository.js");
+const pessoaRepository = new PessoaRepository();
 
 class PessoaServices extends Services {
   constructor() {
-    super('Pessoa');
+    super(pessoaRepository);
   }
+
   async pegaUmRegistroPorNome(nome) {
-    return dataSource[this.model].findAll({
-      where: {
-        nome: nome,
-      },
-    });
+    const where = {
+      nome: nome,
+    };
+    return this.entidadeRepository.pegaUmRegistro(where);
+  }
+  async cadastrar(dto) {
+    try {
+      const newPessoa = await this.entidadeRepository.cadastrar(dto);
+      return newPessoa;
+    } catch (error) {
+      throw new Error("Erro ao cadastrar pessoa");
+    }
   }
 }
 
