@@ -16,6 +16,29 @@ class NoteServices extends Services {
       throw new Error("Erro ao cadastrar nota");
     }
   }
+  async getAllDistinct() {
+    const note = await noteRepository.pegaTodosOsRegistros();
+    var types = [];
+
+    note.map((props, index) => {
+      if (index != 0) {
+        types = types.filter(function (e) {
+          return e !== props.type;
+        });
+      }
+
+      types.push(props.type);
+    });
+
+    return types;
+  }
+  async getALLType(type) {
+    
+    const note = await noteRepository.pegaTodosOsRegistros(type);
+  
+
+    return note;
+  }
 }
 
 module.exports = NoteServices;

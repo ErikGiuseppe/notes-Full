@@ -13,6 +13,7 @@ class Repository {
       },
     });
   }
+  
   async pegaUmRegistro(where) {
     return dataSource[this.model].findOne({ where: { ...where } });
   }

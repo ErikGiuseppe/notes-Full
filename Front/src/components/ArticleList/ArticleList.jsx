@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Article from "../Article/Article";
-import axios from "axios";
+
 import CardForm from "../CardForm/CardForm";
 import { useQuery } from "react-query";
-import AxiosApi from "../../API/AxiosApi";
-const axiosApi = new AxiosApi();
+import NoteRepository from "../../Repositories/NoteRepository";
+const noteRepository = new NoteRepository();
 
-const ArticleList = () => {
+const ArticleList = ({type}) => {
   const { data, isLoading, error } = useQuery(
     "note",
     async () => {
-      return axiosApi.tela();
+      return noteRepository.getALLType(type);
     },
     {
       retry: 2,

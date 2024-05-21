@@ -14,7 +14,7 @@ export default class AxiosApi {
     return data;
   }
   async postagem(Post) {
-    const { data } = await this.axios.post("/note",Post, {
+    const { data } = await this.axios.post("/note", Post, {
       headers: { headers: { "Content-Type": "application/json" } },
     });
 

@@ -14,11 +14,11 @@ import TitleIcon from "@mui/icons-material/Title";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import TagIcon from "@mui/icons-material/Tag";
 import BookIcon from "@mui/icons-material/Book";
-import axios from "axios";
+
 import { useState } from "react";
 import { useMutation } from "react-query";
-import AxiosApi from "../../API/AxiosApi";
-const axiosApi = new AxiosApi();
+import NoteRepository from "../../Repositories/NoteRepository";
+const noteRepository = new NoteRepository();
 
 export default function CardForm() {
   const [post, setPost] = useState({
@@ -29,7 +29,7 @@ export default function CardForm() {
   });
   const mutation = useMutation({
     mutationFn: (Post) => {
-      return axiosApi.postagem(Post);
+      return noteRepository.createNote(Post);
     },
 
     onSuccess: (data) => {
